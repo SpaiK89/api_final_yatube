@@ -46,6 +46,8 @@ class CommentSerializer(serializers.ModelSerializer):
 
 
 class FollowSerializer(serializers.ModelSerializer):
+    # Я же, вроде бы, ограничил эти методы, используя миксины во вьюсете
+    # FollowViewSet, или я не так понял?
     following = serializers.SlugRelatedField(
         queryset=User.objects.all(),
         slug_field='username',
@@ -68,7 +70,10 @@ class FollowSerializer(serializers.ModelSerializer):
         ]
 
     def validate(self, data):
-        if data['following'] == data['user']:
+        # Почему мы проверяем одно поле, если два? Не понимаю, как реализовать
+        # если validate_following(self, value), то как вытащить для сравнения
+        # юзера?
+        if data['user'] == data['following']:
             raise serializers.ValidationError(
                 'Нельзя подписываться на самого себя')
         return data
