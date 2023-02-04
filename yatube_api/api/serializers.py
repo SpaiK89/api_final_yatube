@@ -69,11 +69,8 @@ class FollowSerializer(serializers.ModelSerializer):
             )
         ]
 
-    def validate(self, data):
-        # Почему мы проверяем одно поле, если два? Не понимаю, как реализовать
-        # если validate_following(self, value), то как вытащить для сравнения
-        # юзера?
-        if data['user'] == data['following']:
+    def validate_following(self, following):
+        if self.context['request'].user == following:
             raise serializers.ValidationError(
                 'Нельзя подписываться на самого себя')
-        return data
+        return following
